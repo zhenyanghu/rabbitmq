@@ -1,0 +1,31 @@
+package cn.enjoyedu.hello;
+
+import cn.enjoyedu.RmConst;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+
+/**
+ * @Author: Rocky
+ * @Date: 2020/6/22
+ * @Description:
+ */
+public class MySend implements RabbitTemplate.ConfirmCallback {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    public void send(String msg) {
+        String sendMsg = msg +"---"+ System.currentTimeMillis();;
+        System.out.println("Sender : " + sendMsg);
+        //TODO 普通消息处理
+        //this.rabbitTemplate.convertAndSend(RmConst.QUEUE_HELLO, sendMsg);
+        //TODO 消息处理--(消费者处理时，有手动应答)
+        this.rabbitTemplate.convertAndSend("cn.lyy.payment.queue", sendMsg);
+    }
+
+    @Override
+    public void confirm(CorrelationData correlationData, boolean b, String s) {
+
+    }
+}
